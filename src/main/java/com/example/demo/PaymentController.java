@@ -27,16 +27,8 @@ public class PaymentController {
     }
 
     @GetMapping("/customer/{id}/summary")
-    public ResponseEntity<CustomerSummaryDTO> getCustomerSummary(@PathVariable Long id) {
-        Customer customer = paymentService.getCustomerById(id);
-        
-        int totalTransactions = 0;
-        
-        if (CustomerSegment.VIP.equals(customer.getSegment())) {
-            totalTransactions = customer.getTransactions().size();
-        }
-        
-        return ResponseEntity.ok(new CustomerSummaryDTO(customer.getName(), totalTransactions));
+    public ResponseEntity<CustomerSummaryDTO> getCustomerSummary(@PathVariable Long id) {        
+        return ResponseEntity.ok(paymentService.getCustomerById(id));
     }
 
 }

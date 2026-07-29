@@ -3,6 +3,8 @@ package com.example.demo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.exception.NotFoundException;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -34,9 +36,16 @@ public class PaymentService {
         return new TransactionResponseDTO(tx.getId(), tx.getStatus());
     }
 
-    @Transactional(readOnly = true)
-    public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+    public CustomerSummaryDTO getCustomerById(Long id) {
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new NotFoundException("Cliente no encontrado"));
+        
+        int totalTransactions = 0;
+        
+        if (CustomerSegment.VIP.equals(customer.getSegment())) {
+            totalTransactions = customer.getTransactions().size();
+        }
+    	
+        return new CustomerSummaryDTO(customer.getName(), totalTransactions);
     }
     
 }
