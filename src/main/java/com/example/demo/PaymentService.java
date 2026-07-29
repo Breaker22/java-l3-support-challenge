@@ -5,25 +5,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.exception.NotFoundException;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class PaymentService {
 
     private final CustomerRepository customerRepository;
     private final TransactionRepository transactionRepository;
 
-    public PaymentService(CustomerRepository customerRepository, TransactionRepository transactionRepository) {
-        this.customerRepository = customerRepository;
-        this.transactionRepository = transactionRepository;
-    }
-
     @Transactional
     public TransactionResponseDTO processPayment(TransactionRequestDTO request) {
         log.info("Iniciando procesamiento de pago. Tarjeta: {}, Monto: {}", request.getCreditCardNumber(), request.getAmount());
 
-        Customer customer = customerRepository.findById(request.getCustomerId()).orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+        Customer customer = customerRepository.findById(request.getCustomerId()).orElseThrow(() -> new NotFoundException("Cliente no encontrado"));
 
         Transaction tx = new Transaction();
         tx.setAmount(request.getAmount());
