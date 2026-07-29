@@ -9,3 +9,7 @@ Faltaria organizacion de packages esta todo en un solo package y es dificil hace
 * Se migrara la logica del controller al service por temas de clean code se recomienda no tener mucha logica de negocio en los controllers
 
 * Se detecto que la exception es `RuntimeException` se remplazara por una exception customizable `NotFoundException` y despues se capturara la exception para retornar un 404
+
+** Curl
+OK -> `curl --location 'localhost:8080/api/payments/customer/1/summary'`
+Error -> `curl --location 'localhost:8080/api/payments/customer/10/summary`
