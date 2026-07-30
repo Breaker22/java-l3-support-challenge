@@ -1,10 +1,14 @@
 package com.example.demo;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.enums.CustomerSegment;
 import com.example.demo.enums.TransactionStatusEnum;
+import com.example.demo.exception.DuplicateDataException;
 import com.example.demo.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -48,5 +52,27 @@ public class PaymentService {
 		}
 
 		return new CustomerSummaryDTO(customer.getName(), totalTransactions);
+	}
+
+	public void processRefund(Long id) {
+		Transaction transaction = transactionRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("Transaccion no encontrada"));
+
+		List<Transaction> listRejected = transaction.getCustomer().getTransactions().stream()
+				.filter(t -> t.getStatus().equalsIgnoreCase(TransactionStatusEnum.REJECTED.name())).toList();
+
+		if (!transaction.getStatus().equalsIgnoreCase(TransactionStatusEnum.APPROVED.name())
+				&& !listRejected.isEmpty()) {
+			throw new DuplicateDataException("La devolucion ya existe");
+		}
+
+		Transaction tx = new Transaction();
+
+		tx.setAmount(transaction.getAmount().multiply(new BigDecimal("-1")));
+		tx.setCreditCardNumber(transaction.getCreditCardNumber());
+		tx.setStatus(TransactionStatusEnum.REJECTED.name());
+		tx.setCustomer(tx.getCustomer());
+
+		transactionRepository.save(tx);
 	}
 }

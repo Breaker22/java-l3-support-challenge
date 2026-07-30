@@ -12,6 +12,21 @@ Faltaria organizacion de packages esta todo en un solo package y es dificil hace
 
 * Se mejora el codigo del serivice con `@RequiredArgsConstructor` y borrando el constructor para que automaticamente arme el constructor
 
-** Curl
+### Curl
 OK -> `curl --location 'localhost:8080/api/payments/customer/1/summary'`
+
 Error -> `curl --location 'localhost:8080/api/payments/customer/10/summary`
+
+## Servicio /refund
+* Se crea un nuevo endpoint /refund q acepta por query param el id de la transaccion y cumple las reglas de negocio requeridas
+
+* Se agrega en la entity de `Customer` el fetch type EAGER ya que asi se puede acceder mas rapidamente a todas las transacciones de ese customer
+
+* Se agrega la clase `TransactionStatusEnum` para dejar los status prolijos dentro de una clase
+
+* Segun la logica de negocio la transacccion de id 3 tendria que tener una transaccion anterior q este aprobada
+
+### Curl
+OK -> `curl --location --request POST 'localhost:8080/api/payments/refund?id=2'`
+
+ERROR -> `curl --location --request POST 'localhost:8080/api/payments/refund?id=3'`
