@@ -71,7 +71,7 @@ public class PaymentService {
 		tx.setAmount(transaction.getAmount().multiply(new BigDecimal("-1")));
 		tx.setCreditCardNumber(transaction.getCreditCardNumber());
 		tx.setStatus(TransactionStatusEnum.REJECTED.name());
-		tx.setCustomer(tx.getCustomer());
+		tx.setCustomer(transaction.getCustomer());
 
 		transactionRepository.save(tx);
 	}
