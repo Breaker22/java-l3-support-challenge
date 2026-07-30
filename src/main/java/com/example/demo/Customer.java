@@ -3,6 +3,8 @@ package com.example.demo;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.demo.enums.CustomerSegment;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
